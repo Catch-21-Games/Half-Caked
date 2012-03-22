@@ -190,7 +190,14 @@ namespace Half_Caked
         /// </summary>
         public virtual void LoadContent()
         {
-            EntryFocusChanged = ScreenManager.Game.Content.Load<SoundEffect>("Sounds\\UISelected");
+            try
+            {
+                EntryFocusChanged = ScreenManager.Game.Content.Load<SoundEffect>("Sounds\\UISelected");
+            }
+            catch (NoAudioHardwareException e)
+            {
+                Console.Error.WriteLine("No audio hardware was found...");
+            }
         }
 
 

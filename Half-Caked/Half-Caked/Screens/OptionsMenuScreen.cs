@@ -9,6 +9,7 @@
 
 #region Using Statements
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 #endregion
 
 namespace Half_Caked
@@ -152,16 +153,59 @@ namespace Half_Caked
         public KeybindingsScreen(Profile curProfile)
             : base("Keybindings")
         {
-            MenuEntry backMenuEntry = new MenuEntry("Back");
-            backMenuEntry.Selected += OnCancel;
-            MenuEntries.Add(backMenuEntry);
+            // Jesus this is ugly, its embarrasing to be writing code like this...
+            MenuEntry fwdEntry          = new MenuEntry("Move Forward");
+            MenuEntry backEntry         = new MenuEntry("Move Backwards");
+            MenuEntry crouchEntry       = new MenuEntry("Crouch");
+            MenuEntry jumpEntry         = new MenuEntry("Jump");
+            MenuEntry interactEntry     = new MenuEntry("Interact");
+            MenuEntry portalPriEntry    = new MenuEntry("Portal (Entry) Fire");
+            MenuEntry portalSecEntry    = new MenuEntry("Portal (Exit) Fire");
+            
+            MenuEntry acceptMenuEntry   = new MenuEntry("Accept");
+            MenuEntry cancelMenuEntry   = new MenuEntry("Cancel");
+
+            // Event bindings
+            fwdEntry.Selected           += MoveForwardButton;
+            backEntry.Selected          += MoveBackButton;
+            crouchEntry.Selected        += CrouchButton;
+            jumpEntry.Selected          += JumpButton;
+            interactEntry.Selected      += InteractButton;
+            portalPriEntry.Selected     += PortalPrimaryButton;
+            portalSecEntry.Selected     += PortalSecondaryButton;
+            acceptMenuEntry.Selected    += SaveButton;
+            cancelMenuEntry.Selected    += OnCancel;
+
+            // Menu entries on our list
+            MenuEntries.Add(fwdEntry);
+            MenuEntries.Add(backEntry);
+            MenuEntries.Add(crouchEntry);
+            MenuEntries.Add(jumpEntry);
+            MenuEntries.Add(interactEntry);
+            MenuEntries.Add(portalPriEntry);
+            MenuEntries.Add(portalSecEntry); 
+            MenuEntries.Add(acceptMenuEntry);
+            MenuEntries.Add(cancelMenuEntry);
 
 
             mProfile = curProfile;
         }
 
         private Profile mProfile;
-
-        void SaveButton(object sender, PlayerIndexEventArgs e) { }
+        
+        void MoveForwardButton(object sender, PlayerIndexEventArgs e) {
+            MessageBoxScreen dialog = new KeybindingDialog("Move Forward");
+            ScreenManager.AddScreen(dialog, ControllingPlayer);
+        }
+        void MoveBackButton(object sender, PlayerIndexEventArgs e) { }
+        void CrouchButton(object sender, PlayerIndexEventArgs e) { }
+        void JumpButton(object sender, PlayerIndexEventArgs e) { }
+        void InteractButton(object sender, PlayerIndexEventArgs e) { }
+        void PortalPrimaryButton(object sender, PlayerIndexEventArgs e) { }
+        void PortalSecondaryButton(object sender, PlayerIndexEventArgs e) { }
+        void SaveButton(object sender, PlayerIndexEventArgs e) {
+            HalfCakedGame game = ScreenManager.Game as HalfCakedGame;
+            Profile.SaveProfile(mProfile, "default.sav", game.Device);
+        }
     }
 }
